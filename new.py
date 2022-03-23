@@ -5,7 +5,7 @@ import requests, json, os, urllib, re
 
 init()
 url = "https://members.luscious.net/graphqli/?"
-album_id = 452383 # ID de Manga, Hentai o Porno.
+album_id = None # ID de Manga, Hentai o Porno. Dejar en None para uno random
 
 check = False
 json_file = f"album_{album_id}.json"
@@ -15,6 +15,11 @@ if not os.path.exists(f"files/{json_file}/{json_file}"):
     check = True
 
 # FUNCTIONS #
+def get_random_album():
+    # Entrar a un apartafo random y coger un album random
+
+    return album_id
+
 def download(title, url, bar):
     global json_file
 
@@ -65,6 +70,8 @@ def save(temp):
 
 def sender(n_page):
     global album_id, url
+
+    if album_id is None: get_random_album()
 
     s_data = {
         "query": "query AlbumListOwnPictures($input: PictureListInput!) {\n  picture {\n    list(input: $input) {\n      info {...FacetCollectionInfo\n    }\n    items {\n      __typename\n      id\n      title\n      resolution\n      url_to_original\n      url_to_video\n      is_animated\n      url\n      thumbnails {\n        size\n        url\n      }\n    }\n    }\n  }\n}\nfragment FacetCollectionInfo on FacetCollectionInfo {\n  page\n  has_next_page\n  has_previous_page\n  total_items\n  total_pages\n  items_per_page\n  url_complete\n}",
